@@ -1,0 +1,634 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --background-color: #fff7fb;
+  --panel-color: #ffffff;
+  --text-color: #24212a;
+
+  --pink-color: #ff4f8b;
+  --dark-pink-color: #dc2c6a;
+
+  --yellow-color: #ffd94a;
+  --border-color: #eadde5;
+
+  --shadow:
+    0 12px 30px rgba(63, 32, 48, 0.12);
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Hiragino Kaku Gothic ProN",
+    "Yu Gothic",
+    Meiryo,
+    sans-serif;
+
+  background:
+    radial-gradient(
+      circle at top left,
+      #ffe4ef 0,
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      #fff1bf 0,
+      transparent 28%
+    ),
+    var(--background-color);
+
+  color: var(--text-color);
+}
+
+button {
+  font: inherit;
+}
+
+
+/* =========================
+   画面全体
+========================= */
+
+.app {
+  width: min(1500px, 100%);
+  min-height: 100vh;
+
+  margin: 0 auto;
+  padding: 24px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  gap: 24px;
+}
+
+
+/* =========================
+   左右共通
+========================= */
+
+.gift-area,
+.bingo-area {
+  background: rgba(255, 255, 255, 0.94);
+
+  border:
+    1px solid rgba(255, 255, 255, 0.8);
+
+  border-radius: 28px;
+
+  box-shadow: var(--shadow);
+}
+
+
+/* =========================
+   左側：景品
+========================= */
+
+.gift-area {
+  padding: 24px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.section-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.section-title-row h1,
+.bingo-area h1 {
+  margin: 0;
+
+  letter-spacing: 0.06em;
+}
+
+
+/* 景品8個 */
+
+.gift-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  grid-template-rows:
+    repeat(4, minmax(110px, 1fr));
+
+  gap: 14px;
+
+  min-height: 610px;
+}
+
+
+/* 景品カード */
+
+.gift-card {
+  position: relative;
+
+  padding: 0;
+  overflow: hidden;
+
+  border: 0;
+  border-radius: 20px;
+
+  background: #f5edf2;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 7px 18px rgba(59, 34, 48, 0.12);
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.gift-card:hover {
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 12px 24px rgba(59, 34, 48, 0.17);
+}
+
+.gift-card:active {
+  transform: scale(0.985);
+}
+
+.gift-card img {
+  width: 100%;
+  height: 100%;
+
+  min-height: 120px;
+
+  object-fit: cover;
+  display: block;
+}
+
+.gift-card-label {
+  position: absolute;
+
+  left: 10px;
+  bottom: 10px;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  background: rgba(20, 16, 19, 0.72);
+
+  color: white;
+
+  font-size: 14px;
+  font-weight: bold;
+}
+
+
+/* 開封済み表示 */
+
+.gift-card.is-opened::after {
+  content: "OPEN";
+
+  position: absolute;
+
+  top: 12px;
+  right: 12px;
+
+  padding: 5px 10px;
+
+  border-radius: 999px;
+
+  background: var(--yellow-color);
+
+  color: #312700;
+
+  font-size: 13px;
+  font-weight: 900;
+}
+
+
+/* =========================
+   出た数字一覧
+========================= */
+
+.history-area {
+  margin-top: 18px;
+  padding-top: 16px;
+
+  border-top:
+    2px dashed var(--border-color);
+}
+
+.history-area h2 {
+  margin: 0 0 10px;
+
+  font-size: 18px;
+}
+
+.history-numbers {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 8px;
+
+  min-height: 40px;
+}
+
+.history-number {
+  display: inline-grid;
+  place-items: center;
+
+  min-width: 38px;
+  height: 38px;
+
+  padding: 0 8px;
+
+  border-radius: 10px;
+
+  background: #26212a;
+
+  color: white;
+
+  font-weight: 900;
+}
+
+.history-number.latest {
+  background: var(--pink-color);
+}
+
+.history-empty {
+  color: #8b7d86;
+}
+
+
+/* =========================
+   右側：ビンゴ
+========================= */
+
+.bingo-area {
+  padding: 32px;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+}
+
+.bingo-area h1 {
+  font-size:
+    clamp(42px, 5vw, 88px);
+
+  color: var(--pink-color);
+}
+
+
+/* 現在の数字 */
+
+.current-number {
+  width: min(430px, 78%);
+
+  aspect-ratio: 1;
+
+  margin: 26px 0 24px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #ffffff 0 5%,
+      transparent 6%
+    ),
+    linear-gradient(
+      145deg,
+      #ff7aa8,
+      var(--pink-color)
+    );
+
+  color: white;
+
+  font-size:
+    clamp(110px, 17vw, 270px);
+
+  line-height: 1;
+  font-weight: 1000;
+
+  box-shadow:
+    0 22px 50px rgba(255, 79, 139, 0.33),
+    inset 0 -12px 22px rgba(157, 19, 73, 0.22);
+
+  user-select: none;
+}
+
+
+/* 抽選アニメーション */
+
+.current-number.is-drawing {
+  animation:
+    pulse 0.35s infinite alternate;
+}
+
+@keyframes pulse {
+
+  from {
+    transform:
+      scale(0.97)
+      rotate(-1deg);
+  }
+
+  to {
+    transform:
+      scale(1.02)
+      rotate(1deg);
+  }
+
+}
+
+
+/* STARTボタン */
+
+.draw-button {
+  width: min(360px, 80%);
+
+  padding: 20px 30px;
+
+  border: 0;
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffd94a,
+      #ffb800
+    );
+
+  color: #392700;
+
+  font-size:
+    clamp(28px, 3vw, 48px);
+
+  font-weight: 1000;
+  letter-spacing: 0.08em;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 10px 0 #d39200;
+
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.draw-button:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 12px 0 #d39200;
+}
+
+.draw-button:active {
+  transform: translateY(7px);
+
+  box-shadow:
+    0 3px 0 #d39200;
+}
+
+.draw-button:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.55;
+
+  transform: none;
+
+  box-shadow:
+    0 6px 0 #ad9d76;
+}
+
+
+/* 残り個数 */
+
+.remaining-count {
+  margin: 24px 0 12px;
+
+  font-size: 20px;
+  font-weight: bold;
+}
+
+
+/* 小さいボタン */
+
+.sub-button,
+.reset-button {
+  border:
+    1px solid var(--border-color);
+
+  border-radius: 999px;
+
+  background: white;
+
+  color: #655763;
+
+  cursor: pointer;
+
+  font-weight: bold;
+}
+
+.sub-button {
+  padding: 9px 14px;
+}
+
+.reset-button {
+  padding: 11px 18px;
+}
+
+.sub-button:hover,
+.reset-button:hover {
+  background: #fff3f8;
+}
+
+
+/* =========================
+   景品の中身を表示する画面
+========================= */
+
+.modal {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 100;
+
+  display: none;
+  place-items: center;
+}
+
+.modal.is-open {
+  display: grid;
+}
+
+.modal-backdrop {
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    rgba(22, 15, 20, 0.76);
+
+  backdrop-filter: blur(6px);
+}
+
+.modal-content {
+  position: relative;
+
+  z-index: 1;
+
+  width:
+    min(720px, calc(100vw - 40px));
+
+  max-height:
+    calc(100vh - 40px);
+
+  overflow: auto;
+
+  padding: 24px;
+
+  border-radius: 24px;
+
+  background: white;
+
+  box-shadow:
+    0 20px 70px rgba(0, 0, 0, 0.35);
+
+  text-align: center;
+}
+
+.modal-content h2 {
+  margin:
+    0 50px 18px;
+}
+
+.modal-content img {
+  display: block;
+
+  width: 100%;
+  max-height: 70vh;
+
+  object-fit: contain;
+
+  border-radius: 16px;
+
+  background: #f5f2f4;
+}
+
+.modal-close {
+  position: absolute;
+
+  top: 12px;
+  right: 14px;
+
+  width: 42px;
+  height: 42px;
+
+  border: 0;
+  border-radius: 50%;
+
+  background: #26212a;
+
+  color: white;
+
+  font-size: 28px;
+
+  cursor: pointer;
+}
+
+
+/* =========================
+   スマホ縦向き
+========================= */
+
+@media (max-width: 900px) {
+
+  .app {
+    grid-template-columns: 1fr;
+  }
+
+  .gift-grid {
+    min-height: auto;
+
+    grid-template-rows:
+      repeat(4, 150px);
+  }
+
+  .bingo-area {
+    min-height: 700px;
+  }
+
+}
+
+
+/* =========================
+   横向きで高さが小さい画面
+========================= */
+
+@media
+  (orientation: landscape)
+  and (max-height: 650px) {
+
+  .app {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .gift-area,
+  .bingo-area {
+    padding: 15px;
+
+    border-radius: 18px;
+  }
+
+  .gift-grid {
+    min-height: 430px;
+
+    gap: 8px;
+  }
+
+  .gift-card img {
+    min-height: 90px;
+  }
+
+  .current-number {
+    width: min(310px, 60vh);
+
+    margin:
+      12px 0 14px;
+  }
+
+  .draw-button {
+    padding:
+      13px 24px;
+  }
+
+  .remaining-count {
+    margin:
+      14px 0 8px;
+  }
+
+}
