@@ -602,3 +602,97 @@ button {
   }
 
 }
+
+@media (orientation: landscape) {
+
+  .app {
+    width: 100%;
+    min-height: 100vh;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .gift-area,
+  .bingo-area {
+    padding: 10px;
+    border-radius: 16px;
+  }
+
+  .section-title-row {
+    margin-bottom: 8px;
+  }
+
+  .section-title-row h1 {
+    font-size: 24px;
+  }
+
+  .sub-button {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .gift-grid {
+    min-height: 0;
+    height: 68vh;
+    gap: 6px;
+    grid-template-rows: repeat(4, 1fr);
+  }
+
+  .gift-card {
+    border-radius: 12px;
+  }
+
+  .gift-card img {
+    min-height: 0;
+  }
+
+  .gift-card-label {
+    left: 6px;
+    bottom: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+  .history-area {
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+
+  .history-area h2 {
+    margin-bottom: 5px;
+    font-size: 14px;
+  }
+
+  .history-number {
+    min-width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .bingo-area h1 {
+    font-size: 38px;
+  }
+
+  .current-number {
+    width: min(260px, 48vh);
+    margin: 8px 0 12px;
+    font-size: clamp(80px, 14vw, 150px);
+  }
+
+  .draw-button {
+    width: min(300px, 78%);
+    padding: 10px 20px;
+    font-size: 28px;
+    box-shadow: 0 6px 0 #d39200;
+  }
+
+  .remaining-count {
+    margin: 10px 0 6px;
+    font-size: 16px;
+  }
+
+  .reset-button {
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+}
