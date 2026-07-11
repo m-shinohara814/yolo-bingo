@@ -559,31 +559,6 @@ button {
   cursor: pointer;
 }
 
-
-/* =========================
-   スマホ縦向き
-========================= */
-
-@media (max-width: 900px) {
-
-  .app {
-    grid-template-columns: 1fr;
-  }
-
-  .gift-grid {
-    min-height: auto;
-
-    grid-template-rows:
-      repeat(4, 150px);
-  }
-
-  .bingo-area {
-    min-height: 700px;
-  }
-
-}
-
-
 /* =========================
    横向きで高さが小さい画面
 ========================= */
