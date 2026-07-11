@@ -459,8 +459,10 @@ function renderBingo() {
 
   } else {
 
-    history.forEach(
-      function (number, index) {
+    [...history]
+      .reverse()
+      .forEach(
+        function (number, index) {
 
         const numberElement =
           document.createElement("span");
@@ -469,13 +471,11 @@ function renderBingo() {
           "history-number";
 
 
-        if (
-          index === history.length - 1
-        ) {
-
-          numberElement.classList.add(
-            "latest"
-          );
+        if (index === 0) {
+           numberElement.classList.add(
+           "latest"
+           );
+        }
 
         }
 
