@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>YOLO BINGO</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <main class="app">
+
+    <!-- 左側：景品 -->
+    <section class="gift-area">
+
+      <div class="section-title-row">
+        <h1>🎁 BINGO PRIZES</h1>
+
+        <button
+          id="resetGiftsButton"
+          class="sub-button"
+          type="button"
+        >
+          景品を閉じる
+        </button>
+      </div>
+
+      <!-- 景品画像がJavaScriptで入ります -->
+      <div id="giftGrid" class="gift-grid"></div>
+
+      <!-- 出た数字 -->
+      <section class="history-area">
+        <h2>すでに出た数字</h2>
+
+        <div id="historyNumbers" class="history-numbers">
+          <span class="history-empty">
+            まだ数字は出ていません
+          </span>
+        </div>
+      </section>
+
+    </section>
+
+
+    <!-- 右側：ビンゴ -->
+    <section class="bingo-area">
+
+      <h1>BINGO</h1>
+
+      <div id="currentNumber" class="current-number">
+        ?
+      </div>
+
+      <button
+        id="drawButton"
+        class="draw-button"
+        type="button"
+      >
+        START
+      </button>
+
+      <p id="remainingCount" class="remaining-count">
+        残り 75 個
+      </p>
+
+      <button
+        id="resetBingoButton"
+        class="reset-button"
+        type="button"
+      >
+        ビンゴをリセット
+      </button>
+
+    </section>
+
+  </main>
+
+
+  <!-- 景品の中身を表示する画面 -->
+  <div id="giftModal" class="modal" aria-hidden="true">
+
+    <div
+      class="modal-backdrop"
+      data-close-modal
+    ></div>
+
+    <div
+      class="modal-content"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalTitle"
+    >
+
+      <button
+        id="closeModalButton"
+        class="modal-close"
+        type="button"
+        aria-label="閉じる"
+      >
+        ×
+      </button>
+
+      <h2 id="modalTitle">景品</h2>
+
+      <img
+        id="modalImage"
+        src=""
+        alt="景品の中身"
+      >
+
+    </div>
+
+  </div>
+
+
+  <script src="script.js"></script>
+
+</body>
+</html>
