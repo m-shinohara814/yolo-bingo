@@ -459,38 +459,32 @@ function renderBingo() {
 
   } else {
 
-    [...history]
-      .reverse()
-      .forEach(
-        function (number, index) {
+ [...history]
+  .reverse()
+  .forEach(
+    function (number, index) {
 
-        const numberElement =
-          document.createElement("span");
+      const numberElement =
+        document.createElement("span");
 
-        numberElement.className =
-          "history-number";
+      numberElement.className =
+        "history-number";
 
-
-        if (index === 0) {
-           numberElement.classList.add(
-           "latest"
-           );
-        }
-
-        }
-
-
-        numberElement.textContent =
-          number;
-
-
-        historyNumbers.appendChild(
-          numberElement
+      if (index === 0) {
+        numberElement.classList.add(
+          "latest"
         );
-
       }
-    );
 
+      numberElement.textContent =
+        number;
+
+      historyNumbers.appendChild(
+        numberElement
+      );
+
+    }
+  );
   }
 
 
