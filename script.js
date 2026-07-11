@@ -8,74 +8,74 @@ const STORAGE_KEYS = {
   画像ファイル名
 
   ラッピング画像
-  wrapped-1.jpg
-  wrapped-2.jpg
-  wrapped-3.jpg
-  wrapped-4.jpg
-  wrapped-5.jpg
-  wrapped-6.jpg
-  wrapped-7.jpg
-  wrapped-8.jpg
+  wrapped-1.png
+  wrapped-2.png
+  wrapped-3.png
+  wrapped-4.png
+  wrapped-5.png
+  wrapped-6.png
+  wrapped-7.png
+  wrapped-8.png
 
   中身の画像
-  prize-1.jpg
-  prize-2.jpg
-  prize-3.jpg
-  prize-4.jpg
-  prize-5.jpg
-  prize-6.jpg
-  prize-7.jpg
-  prize-8.jpg
+  prize-1.png
+  prize-2.png
+  prize-3.png
+  prize-4.png
+  prize-5.png
+  prize-6.png
+  prize-7.png
+  prize-8.png
 */
 
 const gifts = [
   {
     id: 1,
     name: "プレゼント 1",
-    wrappedImage: "images/wrapped-1.jpg",
-    prizeImage: "images/prize-1.jpg"
+    wrappedImage: "images/wrapped-1.png",
+    prizeImage: "images/prize-1.png"
   },
   {
     id: 2,
     name: "プレゼント 2",
-    wrappedImage: "images/wrapped-2.jpg",
-    prizeImage: "images/prize-2.jpg"
+    wrappedImage: "images/wrapped-2.png",
+    prizeImage: "images/prize-2.png"
   },
   {
     id: 3,
     name: "プレゼント 3",
-    wrappedImage: "images/wrapped-3.jpg",
-    prizeImage: "images/prize-3.jpg"
+    wrappedImage: "images/wrapped-3.png",
+    prizeImage: "images/prize-3.png"
   },
   {
     id: 4,
     name: "プレゼント 4",
-    wrappedImage: "images/wrapped-4.jpg",
-    prizeImage: "images/prize-4.jpg"
+    wrappedImage: "images/wrapped-4.png",
+    prizeImage: "images/prize-4.png"
   },
   {
     id: 5,
     name: "プレゼント 5",
-    wrappedImage: "images/wrapped-5.jpg",
-    prizeImage: "images/prize-5.jpg"
+    wrappedImage: "images/wrapped-5.png",
+    prizeImage: "images/prize-5.png"
   },
   {
     id: 6,
     name: "プレゼント 6",
-    wrappedImage: "images/wrapped-6.jpg",
-    prizeImage: "images/prize-6.jpg"
+    wrappedImage: "images/wrapped-6.png",
+    prizeImage: "images/prize-6.png"
   },
   {
     id: 7,
     name: "プレゼント 7",
-    wrappedImage: "images/wrapped-7.jpg",
-    prizeImage: "images/prize-7.jpg"
+    wrappedImage: "images/wrapped-7.png",
+    prizeImage: "images/prize-7.png"
   },
   {
     id: 8,
     name: "プレゼント 8",
-    wrappedImage: "images/wrapped-8.jpg",
-    prizeImage: "images/prize-8.jpg"
+    wrappedImage: "images/wrapped-8.png",
+    prizeImage: "images/prize-8.png"
   }
 ];
 
