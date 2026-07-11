@@ -31,49 +31,49 @@ const STORAGE_KEYS = {
 const gifts = [
   {
     id: 1,
-    name: "プレゼント 1",
+    name: "つなげーとポイント",
     wrappedImage: "images/wrapped-1.png",
     prizeImage: "images/prize-1.png"
   },
   {
     id: 2,
-    name: "プレゼント 2",
+    name: "YOLOタンブラー",
     wrappedImage: "images/wrapped-2.png",
     prizeImage: "images/prize-2.png"
   },
   {
     id: 3,
-    name: "プレゼント 3",
+    name: "YOLO米",
     wrappedImage: "images/wrapped-3.png",
     prizeImage: "images/prize-3.png"
   },
   {
     id: 4,
-    name: "プレゼント 4",
+    name: "Amazonギフト券",
     wrappedImage: "images/wrapped-4.png",
     prizeImage: "images/prize-4.png"
   },
   {
     id: 5,
-    name: "プレゼント 5",
+    name: "凍らせて食べるシャーベット",
     wrappedImage: "images/wrapped-5.png",
     prizeImage: "images/prize-5.png"
   },
   {
     id: 6,
-    name: "プレゼント 6",
+    name: "ご当地ラーメンセット",
     wrappedImage: "images/wrapped-6.png",
     prizeImage: "images/prize-6.png"
   },
   {
     id: 7,
-    name: "プレゼント 7",
+    name: "今では関西でしか買えないカール",
     wrappedImage: "images/wrapped-7.png",
     prizeImage: "images/prize-7.png"
   },
   {
     id: 8,
-    name: "プレゼント 8",
+    name: "駄菓子詰め合わせセット",
     wrappedImage: "images/wrapped-8.png",
     prizeImage: "images/prize-8.png"
   }
