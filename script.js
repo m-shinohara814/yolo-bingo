@@ -91,7 +91,7 @@ const gifts = [
   ポップ音が3秒後なら 3000
   ポップ音が4.5秒後なら 4500
 */
-const DRAW_DURATION_MS = 3000;
+const DRAW_DURATION_MS = 2700;
 
 
 /* =========================
