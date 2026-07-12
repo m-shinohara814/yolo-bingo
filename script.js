@@ -5,28 +5,32 @@ const STORAGE_KEYS = {
 
 
 /*
-  画像ファイル名
+  使用するファイル
 
   ラッピング画像
-  wrapped-1.png
-  wrapped-2.png
-  wrapped-3.png
-  wrapped-4.png
-  wrapped-5.png
-  wrapped-6.png
-  wrapped-7.png
-  wrapped-8.png
+  images/wrapped-1.png
+  images/wrapped-2.png
+  images/wrapped-3.png
+  images/wrapped-4.png
+  images/wrapped-5.png
+  images/wrapped-6.png
+  images/wrapped-7.png
+  images/wrapped-8.png
 
-  中身の画像
-  prize-1.png
-  prize-2.png
-  prize-3.png
-  prize-4.png
-  prize-5.png
-  prize-6.png
-  prize-7.png
-  prize-8.png
+  景品画像
+  images/prize-1.png
+  images/prize-2.png
+  images/prize-3.png
+  images/prize-4.png
+  images/prize-5.png
+  images/prize-6.png
+  images/prize-7.png
+  images/prize-8.png
+
+  ビンゴ効果音
+  audio/bingo-sound.mp3
 */
+
 
 const gifts = [
   {
@@ -80,6 +84,20 @@ const gifts = [
 ];
 
 
+/*
+  音源の最後に入っているポップ音が鳴るタイミングです。
+
+  例：
+  ポップ音が3秒後なら 3000
+  ポップ音が4.5秒後なら 4500
+*/
+const DRAW_DURATION_MS = 3000;
+
+
+/* =========================
+   HTML要素
+========================= */
+
 const giftGrid =
   document.getElementById("giftGrid");
 
@@ -114,6 +132,10 @@ const closeModalButton =
   document.getElementById("closeModalButton");
 
 
+/* =========================
+   保存データ
+========================= */
+
 let history =
   loadArray(STORAGE_KEYS.bingoHistory);
 
@@ -121,147 +143,46 @@ let openedGifts =
   loadArray(STORAGE_KEYS.openedGifts);
 
 let isDrawing = false;
+
+
 /* =========================
-   効果音
+   ビンゴ効果音
 ========================= */
 
-let audioContext = null;
+const bingoAudio =
+  new Audio("audio/bingo-sound.mp3");
 
-async function getAudioContext() {
-  if (!audioContext) {
-    const AudioContextClass =
-      window.AudioContext ||
-      window.webkitAudioContext;
-
-    audioContext =
-      new AudioContextClass();
-  }
-
-  if (audioContext.state === "suspended") {
-    await audioContext.resume();
-  }
-
-  return audioContext;
-}
+bingoAudio.preload = "auto";
+bingoAudio.volume = 1;
 
 
-/* ドラムの1打 */
+/*
+  STARTを押したら音源を最初から再生します。
+  音源にはドラムロールと決定音の両方が入っています。
+*/
 
-async function playDrumHit() {
+async function playBingoSound() {
 
-  const context =
-    await getAudioContext();
+  bingoAudio.pause();
+  bingoAudio.currentTime = 0;
 
-  const oscillator =
-    context.createOscillator();
+  try {
 
-  const gain =
-    context.createGain();
+    await bingoAudio.play();
 
-  oscillator.type = "sine";
+  } catch (error) {
 
-  oscillator.frequency.setValueAtTime(
-    130,
-    context.currentTime
-  );
+    /*
+      音声再生に失敗しても、
+      ビンゴ抽選自体は止めません。
+    */
 
-  oscillator.frequency.exponentialRampToValueAtTime(
-    55,
-    context.currentTime + 0.12
-  );
-
-  gain.gain.setValueAtTime(
-    0.3,
-    context.currentTime
-  );
-
-  gain.gain.exponentialRampToValueAtTime(
-    0.001,
-    context.currentTime + 0.14
-  );
-
-  oscillator.connect(gain);
-
-  gain.connect(
-    context.destination
-  );
-
-  oscillator.start();
-
-  oscillator.stop(
-    context.currentTime + 0.15
-  );
-
-}
-
-
-/* ドラムロール開始 */
-
-async function startDrumRoll() {
-
-  await playDrumHit();
-
-  const drumTimer =
-    setInterval(
-      function () {
-        playDrumHit();
-      },
-      115
+    console.error(
+      "ビンゴ効果音を再生できませんでした。",
+      error
     );
 
-  return function stopDrumRoll() {
-    clearInterval(drumTimer);
-  };
-
-}
-
-
-/* 数字決定時のポン音 */
-
-async function playPopSound() {
-
-  const context =
-    await getAudioContext();
-
-  const oscillator =
-    context.createOscillator();
-
-  const gain =
-    context.createGain();
-
-  oscillator.type = "sine";
-
-  oscillator.frequency.setValueAtTime(
-    520,
-    context.currentTime
-  );
-
-  oscillator.frequency.exponentialRampToValueAtTime(
-    1100,
-    context.currentTime + 0.12
-  );
-
-  gain.gain.setValueAtTime(
-    0.45,
-    context.currentTime
-  );
-
-  gain.gain.exponentialRampToValueAtTime(
-    0.001,
-    context.currentTime + 0.35
-  );
-
-  oscillator.connect(gain);
-
-  gain.connect(
-    context.destination
-  );
-
-  oscillator.start();
-
-  oscillator.stop(
-    context.currentTime + 0.36
-  );
+  }
 
 }
 
@@ -276,7 +197,6 @@ function animateCurrentNumber() {
     "number-pop"
   );
 
-
   /*
     同じアニメーションを
     毎回再生するために必要
@@ -284,11 +204,9 @@ function animateCurrentNumber() {
 
   void currentNumber.offsetWidth;
 
-
   currentNumber.classList.add(
     "number-pop"
   );
-
 
   setTimeout(
     function () {
@@ -316,7 +234,6 @@ function launchConfetti() {
   canvas.className =
     "confetti-canvas";
 
-
   document.body.appendChild(
     canvas
   );
@@ -324,6 +241,11 @@ function launchConfetti() {
 
   const context =
     canvas.getContext("2d");
+
+  if (!context) {
+    canvas.remove();
+    return;
+  }
 
 
   const devicePixelRatio =
@@ -337,7 +259,6 @@ function launchConfetti() {
   canvas.height =
     window.innerHeight
     * devicePixelRatio;
-
 
   canvas.style.width =
     window.innerWidth + "px";
@@ -370,7 +291,6 @@ function launchConfetti() {
       function () {
 
         return {
-
           x:
             window.innerWidth / 2,
 
@@ -406,7 +326,6 @@ function launchConfetti() {
             ],
 
           opacity: 1
-
         };
 
       }
@@ -457,28 +376,23 @@ function launchConfetti() {
 
         context.save();
 
-
         context.globalAlpha =
           Math.max(
             particle.opacity,
             0
           );
 
-
         context.translate(
           particle.x,
           particle.y
         );
 
-
         context.rotate(
           particle.rotation
         );
 
-
         context.fillStyle =
           particle.color;
-
 
         context.fillRect(
           -particle.size / 2,
@@ -486,7 +400,6 @@ function launchConfetti() {
           particle.size,
           particle.size * 0.65
         );
-
 
         context.restore();
 
@@ -531,6 +444,7 @@ function launchConfetti() {
   );
 
 }
+
 
 /* =========================
    ローカル保存読み込み
@@ -684,77 +598,82 @@ function renderGifts() {
 
   giftGrid.innerHTML = "";
 
-  gifts.forEach(function (gift) {
 
-    const button =
-      document.createElement("button");
+  gifts.forEach(
+    function (gift) {
 
-    button.type = "button";
-    button.className = "gift-card";
+      const button =
+        document.createElement("button");
 
-    button.setAttribute(
-      "aria-label",
-      gift.name + "を開く"
-    );
+      button.type = "button";
+      button.className = "gift-card";
 
-
-    if (
-      openedGifts.includes(gift.id)
-    ) {
-      button.classList.add(
-        "is-opened"
+      button.setAttribute(
+        "aria-label",
+        gift.name + "を開く"
       );
-    }
 
 
-    const image =
-      document.createElement("img");
+      if (
+        openedGifts.includes(gift.id)
+      ) {
 
-    image.src =
-      gift.wrappedImage;
-
-    image.alt =
-      gift.name + "のラッピング";
-
-
-    setImageFallback(
-      image,
-      "WRAPPED " + gift.id,
-      "#f7d7e5"
-    );
-
-
-    const label =
-      document.createElement("span");
-
-    label.className =
-      "gift-card-label";
-
-    label.textContent =
-      "No. " + gift.id;
-
-
-    button.append(
-      image,
-      label
-    );
-
-
-    button.addEventListener(
-      "click",
-      function () {
-
-        openGift(gift);
+        button.classList.add(
+          "is-opened"
+        );
 
       }
-    );
 
 
-    giftGrid.appendChild(
-      button
-    );
+      const image =
+        document.createElement("img");
 
-  });
+      image.src =
+        gift.wrappedImage;
+
+      image.alt =
+        gift.name + "のラッピング";
+
+
+      setImageFallback(
+        image,
+        "WRAPPED " + gift.id,
+        "#f7d7e5"
+      );
+
+
+      const label =
+        document.createElement("span");
+
+      label.className =
+        "gift-card-label";
+
+      label.textContent =
+        "No. " + gift.id;
+
+
+      button.append(
+        image,
+        label
+      );
+
+
+      button.addEventListener(
+        "click",
+        function () {
+
+          openGift(gift);
+
+        }
+      );
+
+
+      giftGrid.appendChild(
+        button
+      );
+
+    }
+  );
 
 }
 
@@ -791,13 +710,18 @@ function openGift(gift) {
     "aria-hidden",
     "false"
   );
+
+
   launchConfetti();
+
 
   if (
     !openedGifts.includes(gift.id)
   ) {
 
-    openedGifts.push(gift.id);
+    openedGifts.push(
+      gift.id
+    );
 
     saveState();
 
@@ -868,32 +792,47 @@ function renderBingo() {
 
   } else {
 
- [...history]
-  .reverse()
-  .forEach(
-    function (number, index) {
+    /*
+      新しい数字から順番に表示
+    */
 
-      const numberElement =
-        document.createElement("span");
+    [...history]
+      .reverse()
+      .forEach(
+        function (number, index) {
 
-      numberElement.className =
-        "history-number";
+          const numberElement =
+            document.createElement("span");
 
-      if (index === 0) {
-        numberElement.classList.add(
-          "latest"
-        );
-      }
+          numberElement.className =
+            "history-number";
 
-      numberElement.textContent =
-        number;
 
-      historyNumbers.appendChild(
-        numberElement
+          /*
+            一番新しい数字だけ
+            ピンク色にする
+          */
+
+          if (index === 0) {
+
+            numberElement.classList.add(
+              "latest"
+            );
+
+          }
+
+
+          numberElement.textContent =
+            number;
+
+
+          historyNumbers.appendChild(
+            numberElement
+          );
+
+        }
       );
 
-    }
-  );
   }
 
 
@@ -967,19 +906,31 @@ function randomItem(items) {
 
 
 /* =========================
+   指定時間待つ
+========================= */
+
+function wait(milliseconds) {
+
+  return new Promise(
+    function (resolve) {
+
+      setTimeout(
+        resolve,
+        milliseconds
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================
    ビンゴ抽選
 ========================= */
 
 async function drawNumber() {
 
-  const testContext =
-  await getAudioContext();
-
-  alert(
-     "音声状態：" +
-     testContext.state
-  );
-  
   if (isDrawing) {
     return;
   }
@@ -1011,12 +962,13 @@ async function drawNumber() {
   );
 
 
-  const stopDrumRoll =
-     await startDrumRoll();
+  /*
+    STARTボタンを押した操作の中で
+    音声を再生します。
+  */
 
+  playBingoSound();
 
-  const animationDuration =
-    1500;
 
   const intervalTime =
     75;
@@ -1024,6 +976,11 @@ async function drawNumber() {
   const startTime =
     Date.now();
 
+
+  /*
+    音源の決定音が鳴るまで、
+    数字を高速で切り替えます。
+  */
 
   await new Promise(
     function (resolve) {
@@ -1045,10 +1002,12 @@ async function drawNumber() {
 
             if (
               elapsedTime
-              >= animationDuration
+              >= DRAW_DURATION_MS
             ) {
 
-              clearInterval(timer);
+              clearInterval(
+                timer
+              );
 
               resolve();
 
@@ -1060,9 +1019,6 @@ async function drawNumber() {
 
     }
   );
-
-
-  stopDrumRoll();
 
 
   const selectedNumber =
@@ -1089,8 +1045,6 @@ async function drawNumber() {
 
   renderBingo();
 
-  playPopSound();
-
   animateCurrentNumber();
 
 }
@@ -1111,6 +1065,14 @@ function resetBingo() {
   if (!shouldReset) {
     return;
   }
+
+
+  /*
+    再生中の音声も停止
+  */
+
+  bingoAudio.pause();
+  bingoAudio.currentTime = 0;
 
 
   history = [];
