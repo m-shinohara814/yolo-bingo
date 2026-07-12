@@ -147,10 +147,10 @@ async function getAudioContext() {
 
 /* ドラムの1打 */
 
-function playDrumHit() {
+async function playDrumHit() {
 
   const context =
-    getAudioContext();
+    await getAudioContext();
 
   const oscillator =
     context.createOscillator();
@@ -158,9 +158,7 @@ function playDrumHit() {
   const gain =
     context.createGain();
 
-
-  oscillator.type =
-    "sine";
+  oscillator.type = "sine";
 
   oscillator.frequency.setValueAtTime(
     130,
@@ -172,7 +170,6 @@ function playDrumHit() {
     context.currentTime + 0.12
   );
 
-
   gain.gain.setValueAtTime(
     0.3,
     context.currentTime
@@ -183,13 +180,11 @@ function playDrumHit() {
     context.currentTime + 0.14
   );
 
-
   oscillator.connect(gain);
 
   gain.connect(
     context.destination
   );
-
 
   oscillator.start();
 
@@ -202,28 +197,20 @@ function playDrumHit() {
 
 /* ドラムロール開始 */
 
-function startDrumRoll() {
+async function startDrumRoll() {
 
-  playDrumHit();
-
+  await playDrumHit();
 
   const drumTimer =
     setInterval(
       function () {
-
         playDrumHit();
-
       },
       115
     );
 
-
   return function stopDrumRoll() {
-
-    clearInterval(
-      drumTimer
-    );
-
+    clearInterval(drumTimer);
   };
 
 }
@@ -231,10 +218,10 @@ function startDrumRoll() {
 
 /* 数字決定時のポン音 */
 
-function playPopSound() {
+async function playPopSound() {
 
   const context =
-    getAudioContext();
+    await getAudioContext();
 
   const oscillator =
     context.createOscillator();
@@ -242,10 +229,7 @@ function playPopSound() {
   const gain =
     context.createGain();
 
-
-  oscillator.type =
-    "sine";
-
+  oscillator.type = "sine";
 
   oscillator.frequency.setValueAtTime(
     520,
@@ -257,7 +241,6 @@ function playPopSound() {
     context.currentTime + 0.12
   );
 
-
   gain.gain.setValueAtTime(
     0.45,
     context.currentTime
@@ -268,13 +251,11 @@ function playPopSound() {
     context.currentTime + 0.35
   );
 
-
   oscillator.connect(gain);
 
   gain.connect(
     context.destination
   );
-
 
   oscillator.start();
 
@@ -1031,7 +1012,7 @@ async function drawNumber() {
 
 
   const stopDrumRoll =
-    startDrumRoll();
+     await startDrumRoll();
 
 
   const animationDuration =
