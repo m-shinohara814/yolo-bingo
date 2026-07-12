@@ -121,7 +121,445 @@ let openedGifts =
   loadArray(STORAGE_KEYS.openedGifts);
 
 let isDrawing = false;
+/* =========================
+   効果音
+========================= */
 
+let audioContext = null;
+
+
+function getAudioContext() {
+
+  if (!audioContext) {
+
+    audioContext =
+      new (
+        window.AudioContext
+        || window.webkitAudioContext
+      )();
+
+  }
+
+
+  if (
+    audioContext.state === "suspended"
+  ) {
+
+    audioContext.resume();
+
+  }
+
+
+  return audioContext;
+
+}
+
+
+/* ドラムの1打 */
+
+function playDrumHit() {
+
+  const context =
+    getAudioContext();
+
+  const oscillator =
+    context.createOscillator();
+
+  const gain =
+    context.createGain();
+
+
+  oscillator.type =
+    "sine";
+
+  oscillator.frequency.setValueAtTime(
+    130,
+    context.currentTime
+  );
+
+  oscillator.frequency.exponentialRampToValueAtTime(
+    55,
+    context.currentTime + 0.12
+  );
+
+
+  gain.gain.setValueAtTime(
+    0.3,
+    context.currentTime
+  );
+
+  gain.gain.exponentialRampToValueAtTime(
+    0.001,
+    context.currentTime + 0.14
+  );
+
+
+  oscillator.connect(gain);
+
+  gain.connect(
+    context.destination
+  );
+
+
+  oscillator.start();
+
+  oscillator.stop(
+    context.currentTime + 0.15
+  );
+
+}
+
+
+/* ドラムロール開始 */
+
+function startDrumRoll() {
+
+  playDrumHit();
+
+
+  const drumTimer =
+    setInterval(
+      function () {
+
+        playDrumHit();
+
+      },
+      115
+    );
+
+
+  return function stopDrumRoll() {
+
+    clearInterval(
+      drumTimer
+    );
+
+  };
+
+}
+
+
+/* 数字決定時のポン音 */
+
+function playPopSound() {
+
+  const context =
+    getAudioContext();
+
+  const oscillator =
+    context.createOscillator();
+
+  const gain =
+    context.createGain();
+
+
+  oscillator.type =
+    "sine";
+
+
+  oscillator.frequency.setValueAtTime(
+    520,
+    context.currentTime
+  );
+
+  oscillator.frequency.exponentialRampToValueAtTime(
+    1100,
+    context.currentTime + 0.12
+  );
+
+
+  gain.gain.setValueAtTime(
+    0.45,
+    context.currentTime
+  );
+
+  gain.gain.exponentialRampToValueAtTime(
+    0.001,
+    context.currentTime + 0.35
+  );
+
+
+  oscillator.connect(gain);
+
+  gain.connect(
+    context.destination
+  );
+
+
+  oscillator.start();
+
+  oscillator.stop(
+    context.currentTime + 0.36
+  );
+
+}
+
+
+/* =========================
+   数字決定アニメーション
+========================= */
+
+function animateCurrentNumber() {
+
+  currentNumber.classList.remove(
+    "number-pop"
+  );
+
+
+  /*
+    同じアニメーションを
+    毎回再生するために必要
+  */
+
+  void currentNumber.offsetWidth;
+
+
+  currentNumber.classList.add(
+    "number-pop"
+  );
+
+
+  setTimeout(
+    function () {
+
+      currentNumber.classList.remove(
+        "number-pop"
+      );
+
+    },
+    750
+  );
+
+}
+
+
+/* =========================
+   紙吹雪
+========================= */
+
+function launchConfetti() {
+
+  const canvas =
+    document.createElement("canvas");
+
+  canvas.className =
+    "confetti-canvas";
+
+
+  document.body.appendChild(
+    canvas
+  );
+
+
+  const context =
+    canvas.getContext("2d");
+
+
+  const devicePixelRatio =
+    window.devicePixelRatio || 1;
+
+
+  canvas.width =
+    window.innerWidth
+    * devicePixelRatio;
+
+  canvas.height =
+    window.innerHeight
+    * devicePixelRatio;
+
+
+  canvas.style.width =
+    window.innerWidth + "px";
+
+  canvas.style.height =
+    window.innerHeight + "px";
+
+
+  context.scale(
+    devicePixelRatio,
+    devicePixelRatio
+  );
+
+
+  const colors = [
+    "#ff4f8b",
+    "#ffd94a",
+    "#4fc3f7",
+    "#7bd389",
+    "#9c6ade",
+    "#ff8a4c"
+  ];
+
+
+  const particles =
+    Array.from(
+      {
+        length: 180
+      },
+      function () {
+
+        return {
+
+          x:
+            window.innerWidth / 2,
+
+          y:
+            window.innerHeight * 0.45,
+
+          size:
+            Math.random() * 8 + 5,
+
+          speedX:
+            Math.random() * 14 - 7,
+
+          speedY:
+            Math.random() * -13 - 5,
+
+          gravity:
+            Math.random() * 0.15 + 0.18,
+
+          rotation:
+            Math.random()
+            * Math.PI
+            * 2,
+
+          rotationSpeed:
+            Math.random() * 0.3 - 0.15,
+
+          color:
+            colors[
+              Math.floor(
+                Math.random()
+                * colors.length
+              )
+            ],
+
+          opacity: 1
+
+        };
+
+      }
+    );
+
+
+  const startTime =
+    performance.now();
+
+
+  function drawConfetti(currentTime) {
+
+    context.clearRect(
+      0,
+      0,
+      window.innerWidth,
+      window.innerHeight
+    );
+
+
+    particles.forEach(
+      function (particle) {
+
+        particle.x +=
+          particle.speedX;
+
+        particle.y +=
+          particle.speedY;
+
+        particle.speedY +=
+          particle.gravity;
+
+        particle.rotation +=
+          particle.rotationSpeed;
+
+
+        const elapsedTime =
+          currentTime - startTime;
+
+
+        if (elapsedTime > 1800) {
+
+          particle.opacity -=
+            0.025;
+
+        }
+
+
+        context.save();
+
+
+        context.globalAlpha =
+          Math.max(
+            particle.opacity,
+            0
+          );
+
+
+        context.translate(
+          particle.x,
+          particle.y
+        );
+
+
+        context.rotate(
+          particle.rotation
+        );
+
+
+        context.fillStyle =
+          particle.color;
+
+
+        context.fillRect(
+          -particle.size / 2,
+          -particle.size / 3,
+          particle.size,
+          particle.size * 0.65
+        );
+
+
+        context.restore();
+
+      }
+    );
+
+
+    const stillVisible =
+      particles.some(
+        function (particle) {
+
+          return (
+            particle.opacity > 0
+            && particle.y
+              < window.innerHeight + 50
+          );
+
+        }
+      );
+
+
+    if (
+      currentTime - startTime < 3500
+      && stillVisible
+    ) {
+
+      requestAnimationFrame(
+        drawConfetti
+      );
+
+    } else {
+
+      canvas.remove();
+
+    }
+
+  }
+
+
+  requestAnimationFrame(
+    drawConfetti
+  );
+
+}
 
 /* =========================
    ローカル保存読み込み
@@ -382,7 +820,7 @@ function openGift(gift) {
     "aria-hidden",
     "false"
   );
-
+  launchConfetti();
 
   if (
     !openedGifts.includes(gift.id)
@@ -594,6 +1032,10 @@ async function drawNumber() {
   );
 
 
+  const stopDrumRoll =
+    startDrumRoll();
+
+
   const animationDuration =
     1500;
 
@@ -641,6 +1083,9 @@ async function drawNumber() {
   );
 
 
+  stopDrumRoll();
+
+
   const selectedNumber =
     randomItem(
       remainingNumbers
@@ -664,6 +1109,10 @@ async function drawNumber() {
 
 
   renderBingo();
+
+  playPopSound();
+
+  animateCurrentNumber();
 
 }
 
