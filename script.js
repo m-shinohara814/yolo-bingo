@@ -127,31 +127,21 @@ let isDrawing = false;
 
 let audioContext = null;
 
-
-function getAudioContext() {
-
+async function getAudioContext() {
   if (!audioContext) {
+    const AudioContextClass =
+      window.AudioContext ||
+      window.webkitAudioContext;
 
     audioContext =
-      new (
-        window.AudioContext
-        || window.webkitAudioContext
-      )();
-
+      new AudioContextClass();
   }
 
-
-  if (
-    audioContext.state === "suspended"
-  ) {
-
-    audioContext.resume();
-
+  if (audioContext.state === "suspended") {
+    await audioContext.resume();
   }
-
 
   return audioContext;
-
 }
 
 
@@ -1001,6 +991,14 @@ function randomItem(items) {
 
 async function drawNumber() {
 
+  const testContext =
+  await getAudioContext();
+
+  alert(
+     "音声状態：" +
+     testContext.state
+  );
+  
   if (isDrawing) {
     return;
   }
